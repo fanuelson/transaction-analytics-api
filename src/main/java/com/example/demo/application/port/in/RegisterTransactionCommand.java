@@ -1,16 +1,14 @@
 package com.example.demo.application.port.in;
 
 import com.example.demo.domain.model.Money;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Getter
-@RequiredArgsConstructor
-public class RegisterTransactionCommand {
+public record RegisterTransactionCommand(Money amount, LocalDateTime occurredAt) {
 
-  private final Money amount;
-  private final LocalDateTime occurredAt;
+  public RegisterTransactionCommand {
+    Objects.requireNonNull(amount);
+  }
 
   public static RegisterTransactionCommand of(Money amount, LocalDateTime occurredAt) {
     return new RegisterTransactionCommand(amount, occurredAt);

@@ -27,7 +27,7 @@ public class ComputeTransactionStatisticsUseCaseImpl implements ComputeTransacti
   @Override
   public ComputeTransactionStatisticsOutput execute(ComputeTransactionStatisticsQuery query) {
     final var defaultTimeRangeInSeconds = timeRangeConfig.getDefaultTimeRangeInSeconds();
-    final var timeRangeInSeconds = requireNonNullElse(query.getTimeRangeInSeconds(), defaultTimeRangeInSeconds);
+    final var timeRangeInSeconds = requireNonNullElse(query.timeRangeInSeconds(), defaultTimeRangeInSeconds);
     final var now = LocalDateTime.now();
     final var from = truncateSeconds(now.minusSeconds(timeRangeInSeconds));
     final var to = truncateSeconds(now);

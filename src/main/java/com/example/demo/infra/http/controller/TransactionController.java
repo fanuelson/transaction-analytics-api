@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -30,7 +31,7 @@ public class TransactionController {
 
   private RegisterTransactionResponse register(RegisterTransactionCommand command) {
     final var output = registerTransaction.execute(command);
-    final var transaction = output.getTransaction();
+    final var transaction = output.transaction();
     final var amount = transaction.getAmount();
     final var occurredAt = transaction.getOccurredAt();
     log.debug("TRANSACTION_REGISTERED: {}", transaction);
@@ -40,8 +41,10 @@ public class TransactionController {
   @PostMapping("/transacao")
   @ResponseStatus(HttpStatus.CREATED)
   public RegisterTransactionResponse registerAt(@Valid @RequestBody RegisterTransactionRequest request) {
-    final var amount = BigDecimal.valueOf(request.getValor());
-    final var occurredAt = request.getDataHora();
+    if(Objects.isNull(request.dataHora())) return registerNow(request);
+
+    final var amount = BigDecimal.valueOf(request.valor());
+    final var occurredAt = request.dataHora();
     final var command = RegisterTransactionCommand.of(Money.of(amount), occurredAt);
     return register(command);
   }
@@ -49,7 +52,7 @@ public class TransactionController {
   @PostMapping("/transacao/now")
   @ResponseStatus(HttpStatus.CREATED)
   public RegisterTransactionResponse registerNow(@Valid @RequestBody RegisterTransactionRequest request) {
-    final var amount = BigDecimal.valueOf(request.getValor());
+    final var amount = BigDecimal.valueOf(request.valor());
     final var command = RegisterTransactionCommand.now(Money.of(amount));
     return register(command);
   }
@@ -57,18 +60,18 @@ public class TransactionController {
   @GetMapping("/estatistica")
   @ResponseStatus(HttpStatus.OK)
   public TransactionSummaryResponse stats(@Valid TransactionSummaryQuery request) {
-    final var timeRangeInSeconds = request.getTimeRangeInSeconds();
+    final var timeRangeInSeconds = request.timeRangeInSeconds();
     final var query = ComputeTransactionStatisticsQuery.of(timeRangeInSeconds);
     final var output = computeTransactionStatistics.execute(query);
-    log.debug("CALCULATE_STATISTICS: {}", output.getSummary());
-    return TransactionSummaryResponse.from(output.getSummary());
+    log.debug("CALCULATE_STATISTICS: {}", output.summary());
+    return TransactionSummaryResponse.from(output.summary());
   }
 
   @DeleteMapping("/transacao")
   @ResponseStatus(HttpStatus.OK)
   public ClearAllTransactionsOutput clearAll() {
     final var output = clearAllTransactions.execute();
-    log.debug("TOTAL_TRANSACTION_REMOVED: {}", output.getTotalRemoved());
+    log.debug("TOTAL_TRANSACTION_REMOVED: {}", output.totalRemoved());
     return output;
   }
 

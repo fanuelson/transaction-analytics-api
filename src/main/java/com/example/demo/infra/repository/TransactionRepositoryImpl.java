@@ -9,12 +9,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import static java.util.Objects.*;
+import static java.util.Objects.isNull;
 
 @Service
 public class TransactionRepositoryImpl implements TransactionRepository {
 
   private final ConcurrentMap<String, Transaction> store = new ConcurrentHashMap<>();
+
+  private static String generateId() {
+    return UUID.randomUUID().toString();
+  }
 
   @Override
   public Transaction save(Transaction transaction) {
@@ -26,8 +30,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
   @Override
   public List<Transaction> findAll(TransactionQuery searchQuery) {
-    final var from = searchQuery.getFrom();
-    final var to = searchQuery.getTo();
+    final var from = searchQuery.from();
+    final var to = searchQuery.to();
     return store.values().stream()
       .filter(Transaction.isBetween(from, to))
       .toList();
@@ -38,10 +42,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     final var size = store.size();
     store.clear();
     return size;
-  }
-
-  private static String generateId() {
-    return UUID.randomUUID().toString();
   }
 
 }

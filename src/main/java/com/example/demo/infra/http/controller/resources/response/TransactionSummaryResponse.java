@@ -2,19 +2,15 @@ package com.example.demo.infra.http.controller.resources.response;
 
 import com.example.demo.domain.model.Money;
 import com.example.demo.domain.model.MoneySummaryStatistics;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 
-@Getter
-@RequiredArgsConstructor
-public class TransactionSummaryResponse {
-
-  private final long count;
-  private final BigDecimal sum;
-  private final BigDecimal avg;
-  private final BigDecimal min;
-  private final BigDecimal max;
+public record TransactionSummaryResponse(
+  long count,
+  BigDecimal sum,
+  BigDecimal avg,
+  BigDecimal min,
+  BigDecimal max
+) {
 
   public static TransactionSummaryResponse from(MoneySummaryStatistics summary) {
     final var isEmpty = summary.isEmpty();
