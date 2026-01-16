@@ -1,50 +1,59 @@
 package com.example.demo.domain;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.LongAdder;
 
-@Getter
 @ToString
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoneySummaryStatistics {
 
-  private long count;
-  private Money sum;
-  private Money min;
-  private Money max;
+  private final LongAdder count;
+  private final AtomicReference<Money> sum;
+  private final AtomicReference<Money> min;
+  private final AtomicReference<Money> max;
 
   public static MoneySummaryStatistics empty() {
     return new MoneySummaryStatistics(
-      0L,
-      Money.zero(),
-      Money.ofCents(Long.MAX_VALUE),
-      Money.ofCents(Long.MIN_VALUE)
+      new LongAdder(),
+      new AtomicReference<>(Money.zero()),
+      new AtomicReference<>(Money.ofCents(Long.MAX_VALUE)),
+      new AtomicReference<>(Money.ofCents(Long.MIN_VALUE))
     );
   }
 
   public void accept(Money other) {
-    ++count;
-    sum = sum.add(other);
-    min = min.min(other);
-    max = max.max(other);
-  }
-
-  public MoneySummaryStatistics combine(MoneySummaryStatistics other) {
-    count += other.count;
-    sum = sum.add(other.getSum());
-    min = min.min(other.getMin());
-    max = max.max(other.getMax());
-    return this;
+    count.increment();
+    sum.updateAndGet(it -> it.add(other));
+    min.getAndUpdate(prev -> prev.min(other));
+    max.getAndUpdate(prev -> prev.max(other));
   }
 
   public Money getAvg() {
-    return isEmpty() ? Money.zero() : sum.divide(count);
+    long count = getCount();
+    return count == 0 ? Money.zero() : getSum().divide(count);
+  }
+
+  public long getCount() {
+    return count.longValue();
+  }
+
+  public Money getSum() {
+    return sum.get();
+  }
+
+  public Money getMin() {
+    return min.get();
+  }
+
+  public Money getMax() {
+    return max.get();
   }
 
   public boolean isEmpty() {
-    return count == 0;
+    return count.longValue() == 0;
   }
 
 }
