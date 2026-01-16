@@ -1,7 +1,7 @@
 package com.example.demo.infra.http.controller.resources.response;
 
-import com.example.demo.domain.Money;
-import com.example.demo.domain.MoneySummaryStatistics;
+import com.example.demo.domain.model.Money;
+import com.example.demo.domain.model.MoneySummaryStatistics;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;

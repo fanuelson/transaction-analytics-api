@@ -1,6 +1,6 @@
 package com.example.demo.application.port.in;
 
-import com.example.demo.domain.Transaction;
+import com.example.demo.domain.model.Transaction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

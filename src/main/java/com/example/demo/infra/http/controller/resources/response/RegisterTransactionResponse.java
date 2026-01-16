@@ -1,6 +1,6 @@
 package com.example.demo.infra.http.controller.resources.response;
 
-import com.example.demo.domain.Money;
+import com.example.demo.domain.model.Money;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

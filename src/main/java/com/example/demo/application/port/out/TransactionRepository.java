@@ -1,7 +1,7 @@
 package com.example.demo.application.port.out;
 
 import com.example.demo.application.port.in.TransactionQuery;
-import com.example.demo.domain.Transaction;
+import com.example.demo.domain.model.Transaction;
 import java.util.List;
 
 public interface TransactionRepository {

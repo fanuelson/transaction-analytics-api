@@ -6,7 +6,7 @@ import com.example.demo.application.port.in.RegisterTransactionCommand;
 import com.example.demo.application.usecase.ClearAllTransactionsUseCase;
 import com.example.demo.application.usecase.ComputeTransactionStatisticsUseCase;
 import com.example.demo.application.usecase.RegisterTransactionUseCase;
-import com.example.demo.domain.Money;
+import com.example.demo.domain.model.Money;
 import com.example.demo.infra.http.controller.resources.request.RegisterTransactionRequest;
 import com.example.demo.infra.http.controller.resources.request.TransactionSummaryQuery;
 import com.example.demo.infra.http.controller.resources.response.RegisterTransactionResponse;

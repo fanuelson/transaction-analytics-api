@@ -4,7 +4,7 @@ import com.example.demo.application.port.in.RegisterTransactionCommand;
 import com.example.demo.application.port.in.RegisterTransactionOutput;
 import com.example.demo.application.port.out.TransactionRepository;
 import com.example.demo.application.usecase.RegisterTransactionUseCase;
-import com.example.demo.domain.Transaction;
+import com.example.demo.domain.model.Transaction;
 import com.example.demo.domain.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
