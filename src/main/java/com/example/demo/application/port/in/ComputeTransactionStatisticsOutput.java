@@ -7,5 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ComputeTransactionStatisticsOutput {
+
   private final MoneySummaryStatistics summary;
+
+  public static ComputeTransactionStatisticsOutput of(MoneySummaryStatistics summary) {
+    return new ComputeTransactionStatisticsOutput(summary);
+  }
 }

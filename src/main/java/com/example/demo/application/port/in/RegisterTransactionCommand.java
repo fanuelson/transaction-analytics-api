@@ -1,5 +1,6 @@
 package com.example.demo.application.port.in;
 
+import com.example.demo.domain.Money;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
@@ -8,14 +9,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class RegisterTransactionCommand {
 
-  private final double amount;
+  private final Money amount;
   private final LocalDateTime occurredAt;
 
-  public static RegisterTransactionCommand of(double amount, LocalDateTime occurredAt) {
+  public static RegisterTransactionCommand of(Money amount, LocalDateTime occurredAt) {
     return new RegisterTransactionCommand(amount, occurredAt);
   }
 
-  public static RegisterTransactionCommand now(double amount) {
+  public static RegisterTransactionCommand now(Money amount) {
     return of(amount, LocalDateTime.now());
   }
 

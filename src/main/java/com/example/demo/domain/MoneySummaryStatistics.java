@@ -19,8 +19,8 @@ public class MoneySummaryStatistics {
     return new MoneySummaryStatistics(
       0L,
       Money.zero(),
-      Money.ofCents(Long.MAX_VALUE - 1000),
-      Money.ofCents(Long.MIN_VALUE + 1000)
+      Money.ofCents(Long.MAX_VALUE),
+      Money.ofCents(Long.MIN_VALUE)
     );
   }
 
@@ -40,8 +40,7 @@ public class MoneySummaryStatistics {
   }
 
   public Money getAvg() {
-    final var finalCount = count == 0L ? 1L : count;
-    return Money.ofCents(getSum().divide(finalCount));
+    return isEmpty() ? Money.zero() : sum.divide(count);
   }
 
   public boolean isEmpty() {

@@ -6,6 +6,7 @@ import com.example.demo.application.port.in.RegisterTransactionCommand;
 import com.example.demo.application.usecase.ClearAllTransactionsUseCase;
 import com.example.demo.application.usecase.ComputeTransactionStatisticsUseCase;
 import com.example.demo.application.usecase.RegisterTransactionUseCase;
+import com.example.demo.domain.Money;
 import com.example.demo.infra.http.controller.resources.request.RegisterTransactionRequest;
 import com.example.demo.infra.http.controller.resources.request.TransactionSummaryQuery;
 import com.example.demo.infra.http.controller.resources.response.RegisterTransactionResponse;
@@ -13,6 +14,7 @@ import com.example.demo.infra.http.controller.resources.response.TransactionSumm
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/v1")
@@ -25,26 +27,26 @@ public class TransactionController {
 
   private RegisterTransactionResponse register(RegisterTransactionCommand command) {
     final var output = registerTransaction.execute(command);
-    final var createdTransaction = output.getTransaction();
-    final var amount = createdTransaction.getAmount();
-    final var occurredAt = createdTransaction.getOccurredAt();
+    final var transaction = output.getTransaction();
+    final var amount = transaction.getAmount();
+    final var occurredAt = transaction.getOccurredAt();
     return RegisterTransactionResponse.from(amount, occurredAt);
   }
 
   @PostMapping("/transacao")
   @ResponseStatus(HttpStatus.CREATED)
   public RegisterTransactionResponse registerAt(@RequestBody RegisterTransactionRequest request) {
-    final var amount = request.getValor();
+    final var amount = BigDecimal.valueOf(request.getValor());
     final var occurredAt = request.getDataHora();
-    final var command = RegisterTransactionCommand.of(amount, occurredAt);
+    final var command = RegisterTransactionCommand.of(Money.of(amount), occurredAt);
     return register(command);
   }
 
   @PostMapping("/transacao/now")
   @ResponseStatus(HttpStatus.CREATED)
   public RegisterTransactionResponse registerNow(@RequestBody RegisterTransactionRequest request) {
-    final var amount = request.getValor();
-    final var command = RegisterTransactionCommand.now(amount);
+    final var amount = BigDecimal.valueOf(request.getValor());
+    final var command = RegisterTransactionCommand.now(Money.of(amount));
     return register(command);
   }
 

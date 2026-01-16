@@ -1,11 +1,13 @@
 package com.example.demo.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
+@EqualsAndHashCode
 public final class Money {
 
   private final long amountInCents;
@@ -42,7 +44,7 @@ public final class Money {
 
   public Money add(Money other) {
     validate(other);
-    return new Money(this.amountInCents + other.amountInCents);
+    return ofCents(this.amountInCents + other.amountInCents);
   }
 
   public Money subtract(Money other) {
@@ -54,48 +56,32 @@ public final class Money {
     return new Money(Math.round(this.amountInCents * factor));
   }
 
-  public long divide(long divisor) {
+  public Money divide(long divisor) {
     if (divisor <= 0) {
       throw new ArithmeticException("Divisor must be greater than zero");
     }
 
-    return this.amountInCents / divisor;
+    return ofCents(this.amountInCents / divisor);
   }
 
   public Money min(Money other) {
     validate(other);
     final var min = Long.min(this.getAmountInCents(), other.getAmountInCents());
-    return Money.ofCents(min);
+    return ofCents(min);
   }
 
   public Money max(Money other) {
     validate(other);
     final var max = Long.max(this.getAmountInCents(), other.getAmountInCents());
-    return Money.ofCents(max);
+    return ofCents(max);
   }
 
-  public boolean isPositive() {
-    return amountInCents > 0;
-  }
-
-  public boolean isZero() {
-    return amountInCents == 0;
+  public boolean isNegative() {
+    return amountInCents < 0;
   }
 
   private void validate(Money other) {
     requireNonNull(other);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Money money)) return false;
-    return amountInCents == money.amountInCents;
-  }
-
-  @Override
-  public int hashCode() {
-    return Long.hashCode(amountInCents);
   }
 
   @Override

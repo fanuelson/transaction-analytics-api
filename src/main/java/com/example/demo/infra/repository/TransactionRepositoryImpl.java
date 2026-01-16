@@ -5,36 +5,43 @@ import com.example.demo.application.port.out.TransactionRepository;
 import com.example.demo.domain.Transaction;
 import com.example.demo.domain.TransactionId;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import static java.util.Objects.*;
 
 @Service
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-  private final List<Transaction> values = new ArrayList<>();
+  private final ConcurrentMap<String, Transaction> store = new ConcurrentHashMap<>();
 
   @Override
   public Transaction save(Transaction transaction) {
-    final var id = TransactionId.create();
-    final var createdTransaction = transaction.withId(id.value());
-    values.add(createdTransaction);
-    return createdTransaction;
+    final var id = TransactionId.of(generateId());
+    final var createdTransaction = transaction.withId(id);
+    final var existing = store.putIfAbsent(createdTransaction.getId().value(), createdTransaction);
+    return isNull(existing) ? createdTransaction : existing;
   }
 
   @Override
   public List<Transaction> findAll(TransactionQuery searchQuery) {
     final var from = searchQuery.getFrom();
     final var to = searchQuery.getTo();
-    return values.stream()
+    return store.values().stream()
       .filter(Transaction.isBetween(from, to))
       .toList();
   }
 
   @Override
   public long deleteAll() {
-    final var size = values.size();
-    values.clear();
+    final var size = store.size();
+    store.clear();
     return size;
+  }
+
+  private static String generateId() {
+    return UUID.randomUUID().toString();
   }
 
 }
