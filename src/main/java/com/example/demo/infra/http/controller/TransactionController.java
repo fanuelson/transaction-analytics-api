@@ -12,10 +12,12 @@ import com.example.demo.infra.http.controller.resources.request.TransactionSumma
 import com.example.demo.infra.http.controller.resources.response.RegisterTransactionResponse;
 import com.example.demo.infra.http.controller.resources.response.TransactionSummaryResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1")
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class TransactionController {
     final var transaction = output.getTransaction();
     final var amount = transaction.getAmount();
     final var occurredAt = transaction.getOccurredAt();
+    log.debug("TRANSACTION_REGISTERED: {}", transaction);
     return RegisterTransactionResponse.from(amount, occurredAt);
   }
 
@@ -56,13 +59,16 @@ public class TransactionController {
     final var lastSeconds = request.getLastSeconds();
     final var query = ComputeTransactionStatisticsQuery.of(lastSeconds);
     final var output = computeTransactionStatistics.execute(query);
+    log.debug("CALCULATE_STATISTICS: {}", output.getSummary());
     return TransactionSummaryResponse.from(output.getSummary());
   }
 
   @DeleteMapping("/transacao")
   @ResponseStatus(HttpStatus.OK)
   public ClearAllTransactionsOutput clearAll() {
-    return clearAllTransactions.execute();
+    final var output = clearAllTransactions.execute();
+    log.debug("TOTAL_TRANSACTION_REMOVED: {}", output.getTotalRemoved());
+    return output;
   }
 
 }

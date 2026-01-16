@@ -17,7 +17,6 @@ public class ClearAllTransactionsUseCaseImpl implements ClearAllTransactionsUseC
   @Override
   public ClearAllTransactionsOutput execute() {
     final var totalRemoved = transactionRepository.deleteAll();
-    log.info("Total transactions removed: {}", totalRemoved);
     return ClearAllTransactionsOutput.of(totalRemoved);
   }
 }

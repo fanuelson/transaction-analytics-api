@@ -33,7 +33,6 @@ public class ComputeTransactionStatisticsUseCaseImpl implements ComputeTransacti
     final var summary = MoneySummaryStatistics.empty();
     final var transactions = transactionRepository.findAll(range);
     transactions.parallelStream().forEach(applyingTo(summary));
-    log.info("Statistics computed - range: {}, summary: {}", range, summary);
     return ComputeTransactionStatisticsOutput.of(summary);
   }
 

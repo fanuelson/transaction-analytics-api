@@ -26,7 +26,6 @@ public class RegisterTransactionUseCaseImpl implements RegisterTransactionUseCas
     final var truncatedOccurredAt = occurredAt.truncatedTo(ChronoUnit.SECONDS);
     final var transaction = Transaction.of(amount, truncatedOccurredAt);
     final var createdTransaction = transactionRepository.save(transaction);
-    log.info("Transaction registered: {}", createdTransaction);
     return RegisterTransactionOutput.of(createdTransaction);
   }
 
