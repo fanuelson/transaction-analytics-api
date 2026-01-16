@@ -11,6 +11,7 @@ import com.example.demo.infra.http.controller.resources.request.RegisterTransact
 import com.example.demo.infra.http.controller.resources.request.TransactionSummaryQuery;
 import com.example.demo.infra.http.controller.resources.response.RegisterTransactionResponse;
 import com.example.demo.infra.http.controller.resources.response.TransactionSummaryResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class TransactionController {
 
   @PostMapping("/transacao")
   @ResponseStatus(HttpStatus.CREATED)
-  public RegisterTransactionResponse registerAt(@RequestBody RegisterTransactionRequest request) {
+  public RegisterTransactionResponse registerAt(@Valid @RequestBody RegisterTransactionRequest request) {
     final var amount = BigDecimal.valueOf(request.getValor());
     final var occurredAt = request.getDataHora();
     final var command = RegisterTransactionCommand.of(Money.of(amount), occurredAt);
@@ -47,7 +48,7 @@ public class TransactionController {
 
   @PostMapping("/transacao/now")
   @ResponseStatus(HttpStatus.CREATED)
-  public RegisterTransactionResponse registerNow(@RequestBody RegisterTransactionRequest request) {
+  public RegisterTransactionResponse registerNow(@Valid @RequestBody RegisterTransactionRequest request) {
     final var amount = BigDecimal.valueOf(request.getValor());
     final var command = RegisterTransactionCommand.now(Money.of(amount));
     return register(command);
@@ -55,9 +56,9 @@ public class TransactionController {
 
   @GetMapping("/estatistica")
   @ResponseStatus(HttpStatus.OK)
-  public TransactionSummaryResponse stats(TransactionSummaryQuery request) {
-    final var lastSeconds = request.getLastSeconds();
-    final var query = ComputeTransactionStatisticsQuery.of(lastSeconds);
+  public TransactionSummaryResponse stats(@Valid TransactionSummaryQuery request) {
+    final var timeRangeInSeconds = request.getTimeRangeInSeconds();
+    final var query = ComputeTransactionStatisticsQuery.of(timeRangeInSeconds);
     final var output = computeTransactionStatistics.execute(query);
     log.debug("CALCULATE_STATISTICS: {}", output.getSummary());
     return TransactionSummaryResponse.from(output.getSummary());

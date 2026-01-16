@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ComputeTransactionStatisticsQuery {
 
-  private final Long lastSeconds;
+  private final Long timeRangeInSeconds;
 
-  public static ComputeTransactionStatisticsQuery of(Long lastSeconds) {
-    return new ComputeTransactionStatisticsQuery(lastSeconds);
+  public static ComputeTransactionStatisticsQuery of(Long timeRangeInSeconds) {
+    return new ComputeTransactionStatisticsQuery(timeRangeInSeconds);
   }
 }

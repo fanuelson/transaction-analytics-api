@@ -6,7 +6,7 @@
 
 ### Checklist:
 
- - [ ] offsetSeconds configurável
- - [ ] Mais Logs
- - [ ] Tratamento de erros
+ - [x] Default time range configurável
+ - [x] Mais Logs
+ - [x] Tratamento de erros
  - [x] Health Check  ```/actuator/health```

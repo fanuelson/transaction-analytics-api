@@ -3,6 +3,7 @@ package com.example.demo.application.usecase.impl;
 import com.example.demo.application.port.in.ComputeTransactionStatisticsOutput;
 import com.example.demo.application.port.in.ComputeTransactionStatisticsQuery;
 import com.example.demo.application.port.in.TransactionQuery;
+import com.example.demo.application.port.out.TimeRangeConfig;
 import com.example.demo.application.port.out.TransactionRepository;
 import com.example.demo.application.usecase.ComputeTransactionStatisticsUseCase;
 import com.example.demo.domain.model.MoneySummaryStatistics;
@@ -20,14 +21,15 @@ import static java.util.Objects.requireNonNullElse;
 @RequiredArgsConstructor
 public class ComputeTransactionStatisticsUseCaseImpl implements ComputeTransactionStatisticsUseCase {
 
-  private static final long DEFAULT_LAST_SECONDS = 60L;
+  private final TimeRangeConfig timeRangeConfig;
   private final TransactionRepository transactionRepository;
 
   @Override
   public ComputeTransactionStatisticsOutput execute(ComputeTransactionStatisticsQuery query) {
-    final var lastSeconds = requireNonNullElse(query.getLastSeconds(), DEFAULT_LAST_SECONDS);
+    final var defaultTimeRangeInSeconds = timeRangeConfig.getDefaultTimeRangeInSeconds();
+    final var timeRangeInSeconds = requireNonNullElse(query.getTimeRangeInSeconds(), defaultTimeRangeInSeconds);
     final var now = LocalDateTime.now();
-    final var from = truncateSeconds(now.minusSeconds(lastSeconds));
+    final var from = truncateSeconds(now.minusSeconds(timeRangeInSeconds));
     final var to = truncateSeconds(now);
     final var range = TransactionQuery.of(from, to);
     final var summary = MoneySummaryStatistics.empty();
