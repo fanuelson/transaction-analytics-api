@@ -1,27 +1,25 @@
-package com.example.demo.domain.model;
+package com.example.demo.domain.money;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import static java.util.Objects.requireNonNull;
 
-@Getter
 @EqualsAndHashCode
-public final class Money {
+public final class LongMoney implements Money {
 
   private final long amountInCents;
 
-  private Money(long amountInCents) {
+  private LongMoney(long amountInCents) {
     this.amountInCents = amountInCents;
   }
 
   public static Money zero() {
-    return new Money(0L);
+    return new LongMoney(0L);
   }
 
   public static Money ofCents(long amountInCents) {
-    return new Money(amountInCents);
+    return new LongMoney(amountInCents);
   }
 
   public static Money ofCents(BigDecimal inCents) {
@@ -36,24 +34,28 @@ public final class Money {
     );
   }
 
-  public BigDecimal getAmount() {
+  public BigDecimal amount() {
     return BigDecimal.valueOf(amountInCents)
       .setScale(0, RoundingMode.HALF_EVEN)
       .movePointLeft(2);
   }
 
+  public long amountInCents() {
+    return amountInCents;
+  }
+
   public Money add(Money other) {
     validate(other);
-    return ofCents(this.amountInCents + other.amountInCents);
+    return ofCents(this.amountInCents + other.amountInCents());
   }
 
   public Money subtract(Money other) {
     validate(other);
-    return new Money(this.amountInCents - other.amountInCents);
+    return new LongMoney(this.amountInCents - other.amountInCents());
   }
 
   public Money multiply(double factor) {
-    return new Money(Math.round(this.amountInCents * factor));
+    return new LongMoney(Math.round(this.amountInCents * factor));
   }
 
   public Money divide(long divisor) {
@@ -66,13 +68,13 @@ public final class Money {
 
   public Money min(Money other) {
     validate(other);
-    final var min = Long.min(this.getAmountInCents(), other.getAmountInCents());
+    final var min = Long.min(this.amountInCents, other.amountInCents());
     return ofCents(min);
   }
 
   public Money max(Money other) {
     validate(other);
-    final var max = Long.max(this.getAmountInCents(), other.getAmountInCents());
+    final var max = Long.max(this.amountInCents, other.amountInCents());
     return ofCents(max);
   }
 

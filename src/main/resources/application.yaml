@@ -2,6 +2,5 @@ spring:
   application:
     name: transaction-analytics-api
 
-
 statisticsConfig:
   defaultTimeRangeInSeconds: 60

@@ -1,6 +1,6 @@
 package com.example.demo.application.port.in;
 
-import com.example.demo.domain.model.MoneySummaryStatistics;
+import com.example.demo.domain.money.MoneySummaryStatistics;
 
 public record ComputeTransactionStatisticsOutput(MoneySummaryStatistics summary) {
 

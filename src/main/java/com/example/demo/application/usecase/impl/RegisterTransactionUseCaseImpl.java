@@ -2,14 +2,14 @@ package com.example.demo.application.usecase.impl;
 
 import com.example.demo.application.port.in.RegisterTransactionCommand;
 import com.example.demo.application.port.in.RegisterTransactionOutput;
-import com.example.demo.application.port.out.TransactionRepository;
 import com.example.demo.application.usecase.RegisterTransactionUseCase;
-import com.example.demo.domain.exception.BusinessException;
-import com.example.demo.domain.model.Transaction;
+import com.example.demo.domain.common.exception.BusinessValidationException;
+import com.example.demo.domain.transaction.Transaction;
+import com.example.demo.domain.transaction.repository.TransactionRepository;
+import com.example.demo.domain.transaction.validator.TransactionValidatorChain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Slf4j
@@ -17,7 +17,8 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class RegisterTransactionUseCaseImpl implements RegisterTransactionUseCase {
 
-  private final TransactionRepository transactionRepository;
+  private final TransactionRepository repository;
+  private final TransactionValidatorChain validator;
 
   public RegisterTransactionOutput execute(RegisterTransactionCommand command) {
     validate(command);
@@ -25,18 +26,14 @@ public class RegisterTransactionUseCaseImpl implements RegisterTransactionUseCas
     final var occurredAt = command.occurredAt();
     final var truncatedOccurredAt = occurredAt.truncatedTo(ChronoUnit.SECONDS);
     final var transaction = Transaction.of(amount, truncatedOccurredAt);
-    final var createdTransaction = transactionRepository.save(transaction);
+    final var createdTransaction = repository.save(transaction);
     return RegisterTransactionOutput.of(createdTransaction);
   }
 
   private void validate(RegisterTransactionCommand command) {
-    final var amount = command.amount();
-    if (amount.isNegative()) {
-      throw BusinessException.of("Valor deve ser maior ou igual a 0");
-    }
-
-    if (command.occurredAt().isAfter(LocalDateTime.now())) {
-      throw BusinessException.of("Data da transação deve ser anterior a data atual");
+    final var result = validator.validate(Transaction.of(command.amount(), command.occurredAt()));
+    if (result.isInvalid()) {
+      throw BusinessValidationException.from(result);
     }
   }
 }

@@ -1,7 +1,7 @@
 package com.example.demo.infra.http.controller.resources.response;
 
-import com.example.demo.domain.model.Money;
-import com.example.demo.domain.model.MoneySummaryStatistics;
+import com.example.demo.domain.money.MoneySummaryStatistics;
+import com.example.demo.domain.money.Money;
 import java.math.BigDecimal;
 
 public record TransactionSummaryResponse(
@@ -18,10 +18,10 @@ public record TransactionSummaryResponse(
     final var max = isEmpty ? Money.zero() : summary.getMax();
     return new TransactionSummaryResponse(
       summary.getCount(),
-      summary.getSum().getAmount(),
-      summary.getAvg().getAmount(),
-      min.getAmount(),
-      max.getAmount()
+      summary.getSum().amount(),
+      summary.getAvg().amount(),
+      min.amount(),
+      max.amount()
     );
   }
 

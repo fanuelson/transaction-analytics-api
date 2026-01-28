@@ -1,6 +1,6 @@
 package com.example.demo.infra.http.handler;
 
-import com.example.demo.domain.exception.BusinessException;
+import com.example.demo.domain.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

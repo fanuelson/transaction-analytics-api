@@ -1,6 +1,6 @@
 package com.example.demo.application.port.in;
 
-import com.example.demo.domain.model.Money;
+import com.example.demo.domain.money.Money;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

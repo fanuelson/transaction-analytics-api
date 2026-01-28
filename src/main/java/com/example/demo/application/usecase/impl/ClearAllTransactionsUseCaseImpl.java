@@ -1,7 +1,7 @@
 package com.example.demo.application.usecase.impl;
 
 import com.example.demo.application.port.in.ClearAllTransactionsOutput;
-import com.example.demo.application.port.out.TransactionRepository;
+import com.example.demo.domain.transaction.repository.TransactionRepository;
 import com.example.demo.application.usecase.ClearAllTransactionsUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

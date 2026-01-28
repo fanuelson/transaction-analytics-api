@@ -1,9 +1,9 @@
 package com.example.demo.infra.repository;
 
 import com.example.demo.application.port.in.TransactionQuery;
-import com.example.demo.application.port.out.TransactionRepository;
-import com.example.demo.domain.model.Transaction;
-import com.example.demo.domain.model.TransactionId;
+import com.example.demo.domain.transaction.repository.TransactionRepository;
+import com.example.demo.domain.transaction.Transaction;
+import com.example.demo.domain.transaction.vo.TransactionId;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
