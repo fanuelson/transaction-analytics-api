@@ -1,5 +1,7 @@
 package com.example.demo.application.usecase.impl;
 
+import com.example.demo.application.event.TransactionCreatedEvent;
+import com.example.demo.application.event.TransactionEventPublisher;
 import com.example.demo.application.port.in.RegisterTransactionCommand;
 import com.example.demo.application.port.in.RegisterTransactionOutput;
 import com.example.demo.application.usecase.RegisterTransactionUseCase;
@@ -19,15 +21,21 @@ public class RegisterTransactionUseCaseImpl implements RegisterTransactionUseCas
 
   private final TransactionRepository repository;
   private final TransactionValidatorChain validator;
+  private final TransactionEventPublisher transactionEventPublisher;
 
   public RegisterTransactionOutput execute(RegisterTransactionCommand command) {
     validate(command);
+    final var transaction = createTransaction(command);
+    final var savedTransaction = repository.save(transaction);
+    transactionEventPublisher.publish(TransactionCreatedEvent.of(savedTransaction));
+    return RegisterTransactionOutput.of(savedTransaction);
+  }
+
+  private Transaction createTransaction(RegisterTransactionCommand command) {
     final var amount = command.amount();
     final var occurredAt = command.occurredAt();
     final var truncatedOccurredAt = occurredAt.truncatedTo(ChronoUnit.SECONDS);
-    final var transaction = Transaction.of(amount, truncatedOccurredAt);
-    final var createdTransaction = repository.save(transaction);
-    return RegisterTransactionOutput.of(createdTransaction);
+    return Transaction.of(amount, truncatedOccurredAt);
   }
 
   private void validate(RegisterTransactionCommand command) {

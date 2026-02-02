@@ -16,8 +16,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
-import java.util.Objects;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @RestController
@@ -41,12 +42,24 @@ public class TransactionController {
   @PostMapping("/transacao")
   @ResponseStatus(HttpStatus.CREATED)
   public RegisterTransactionResponse registerAt(@Valid @RequestBody RegisterTransactionRequest request) {
-    if(Objects.isNull(request.dataHora())) return registerNow(request);
+    if (isNull(request.dataHora())) return registerNow(request);
 
     final var amount = BigDecimal.valueOf(request.valor());
     final var occurredAt = request.dataHora();
     final var command = RegisterTransactionCommand.of(Money.of(amount), occurredAt);
     return register(command);
+  }
+
+  @PostMapping("/transacao/async")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mono<RegisterTransactionResponse> registerAtAsync(@Valid @RequestBody RegisterTransactionRequest request) {
+    return Mono.fromCallable(() -> {
+      if (isNull(request.dataHora())) return registerNow(request);
+      final var amount = BigDecimal.valueOf(request.valor());
+      final var occurredAt = request.dataHora();
+      final var command = RegisterTransactionCommand.of(Money.of(amount), occurredAt);
+      return register(command);
+    });
   }
 
   @PostMapping("/transacao/now")

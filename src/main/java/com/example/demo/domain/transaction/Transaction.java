@@ -22,6 +22,7 @@ public interface Transaction {
   static Predicate<Transaction> isAfter(LocalDateTime reference) {
     return it -> it.getOccurredAt().isAfter(reference);
   }
+
   TransactionId getId();
   Transaction withId(TransactionId id);
   Money getAmount();

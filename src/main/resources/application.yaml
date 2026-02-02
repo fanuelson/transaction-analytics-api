@@ -2,5 +2,9 @@ spring:
   application:
     name: transaction-analytics-api
 
+reactor:
+  netty:
+    ioWorkerCount: 8
+
 statisticsConfig:
   defaultTimeRangeInSeconds: 60

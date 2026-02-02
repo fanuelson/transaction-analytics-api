@@ -24,11 +24,24 @@ public class MoneySummaryStatistics {
     );
   }
 
+  public static MoneySummaryStatistics of(Money money) {
+    final var summary = empty();
+    summary.accept(money);
+    return summary;
+  }
+
   public void accept(Money other) {
     count.increment();
     sum.updateAndGet(it -> it.add(other));
     min.getAndUpdate(prev -> prev.min(other));
     max.getAndUpdate(prev -> prev.max(other));
+  }
+
+  public void combine(MoneySummaryStatistics other) {
+    count.add(other.getCount());
+    sum.updateAndGet(it -> it.add(other.getSum()));
+    min.getAndUpdate(prev -> prev.min(other.getMin()));
+    max.getAndUpdate(prev -> prev.max(other.getMax()));
   }
 
   public Money getAvg() {
