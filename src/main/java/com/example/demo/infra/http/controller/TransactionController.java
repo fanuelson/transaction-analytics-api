@@ -35,7 +35,6 @@ public class TransactionController {
     final var transaction = output.transaction();
     final var amount = transaction.getAmount();
     final var occurredAt = transaction.getOccurredAt();
-    log.debug("TRANSACTION_REGISTERED: {}", transaction);
     return RegisterTransactionResponse.from(amount, occurredAt);
   }
 
@@ -76,7 +75,6 @@ public class TransactionController {
     final var timeRangeInSeconds = request.timeRangeInSeconds();
     final var query = ComputeTransactionStatisticsQuery.of(timeRangeInSeconds);
     final var output = computeTransactionStatistics.execute(query);
-    log.debug("CALCULATE_STATISTICS: {}", output.summary());
     return TransactionSummaryResponse.from(output.summary());
   }
 
@@ -84,7 +82,6 @@ public class TransactionController {
   @ResponseStatus(HttpStatus.OK)
   public ClearAllTransactionsOutput clearAll() {
     final var output = clearAllTransactions.execute();
-    log.debug("TOTAL_TRANSACTION_REMOVED: {}", output.totalRemoved());
     return output;
   }
 

@@ -14,7 +14,6 @@ function randomDoubleFixed(min, max, decimals) {
   return parseFloat(random.toFixed(decimals));
 }
 
-const utcOffset = 180*60;
 const oneMinute = 60*1000;
 const now = Date.now()
 
@@ -28,9 +27,11 @@ return [isoDateString, timeString].join('T');
 }
 
 export default function () {
+
+    const dtHora = randomDate();
     let payload = JSON.stringify({
         valor:  `${randomDoubleFixed(1, 5000, 2)}`,
-        dataHora: `${randomDate()}`
+        dataHora: `${dtHora}`
     });
 
     let params = { headers: { "Content-Type": "application/json" } };

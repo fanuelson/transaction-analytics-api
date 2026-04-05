@@ -10,7 +10,7 @@ public class TransactionEventPublisher {
 
   private final ApplicationEventPublisher publisher;
 
-  public void publish(TransactionCreatedEvent event) {
+  public void publish(Object event) {
     publisher.publishEvent(event);
   }
 }

@@ -9,11 +9,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class TransactionCreatedEvent {
+public class TransactionsDeletedEvent {
 
   private final Transaction transaction;
 
-  public static TransactionCreatedEvent of(Transaction transaction) {
-    return new TransactionCreatedEvent(transaction);
+  public static TransactionsDeletedEvent of(Transaction transaction) {
+    return new TransactionsDeletedEvent(transaction);
   }
 }
